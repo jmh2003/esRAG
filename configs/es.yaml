@@ -1,0 +1,10 @@
+# ─── ElasticSearch Accessed Through Remote Deployment ────────────────────────────────
+# 下面加载的账号，需要查看 elasticsearch.yml 中的配置
+# 密码看./elasticsearch 的输出？
+
+host: "localhost"
+port: "9200"
+user: "elastic"
+password: "*T+uMmlqgE8aS2q6DwtS"  
+index: "reference"
+search_field: "text"
