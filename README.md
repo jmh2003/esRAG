@@ -1,4 +1,60 @@
 # esRAG
+How to use Elasticsearch! Several steps on a Linux server!
+
+## Complete Elasticsearch Configuration Deployment and Application
+
+> Write this down to avoid forgetting.
+
+### Linux Download
+
+[Download Elasticsearch | Elastic](https://www.elastic.co/cn/downloads/elasticsearch)  
+
+After downloading the tar file, extract it. It's better to choose a newer version if possible.
+
+```bash
+tar -zxvf xxx.tar.gz
+```
+
+After extraction, navigate to the `bin` folder within the extracted directory.
+
+### Start
+
+Start Elasticsearch by running:
+
+```bash
+./elasticsearch
+```
+
+### Configuration
+
+Check the output from `./elasticsearch`.
+
+You can obtain relevant information such as usernames, ports, and passwords (this is not a conventional operation).
+
+**Note: Ensure that `./elasticsearch` is running when performing the following database operations!**
+
+### Data Import
+
+Place the configuration output in `configs/es.yaml`. Then run:
+
+```bash
+python data_to_json_es.py
+```
+
+This command will import the data into the database.
+
+### Query
+
+Run the following command to get the query results:
+
+```bash
+python search.py
+```
+
+
+
+
+# esRAG
 How to use elasticsearch! Several steps in linux server!
 
 ## 完整的elasticsearch配置部署和应用
