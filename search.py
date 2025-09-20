@@ -3,13 +3,13 @@ import os
 # 添加当前目录到系统路径
 file = os.path.dirname(os.path.abspath(__file__))
 
-from .es import Es
-from .utils import load_yaml_conf
+from es import Es
+from utils import load_yaml_conf
 
 
 # 加载ES配置
 # 使用绝对路径
-ES_CONF_PATH = '/home/fangly/SearchEngine-main/esRAG/configs/es.yaml'
+ES_CONF_PATH = './configs/es.yaml'
 
 es_info = load_yaml_conf(ES_CONF_PATH)
 reference_es = Es(

@@ -47,6 +47,14 @@ reference_es = Es(
     index=es_info['index']
 )
 
+
+if not reference_es.es.indices.exists(index=reference_es.index):
+    reference_es.es.indices.create(index=reference_es.index)
+    print(f"索引 {reference_es.index} 已创建")
+else:
+    print(f"索引 {reference_es.index} 已存在")
+
+
 # 清理文本函数
 def clean_text(text):
     if not isinstance(text, str):
