@@ -1,10 +1,11 @@
 # ─── ElasticSearch Accessed Through Remote Deployment ────────────────────────────────
 # 下面加载的账号，需要查看 elasticsearch.yml 中的配置
 # 密码看./elasticsearch 的输出？
+# ./elasticsearch-reset-password -u elastic 执行这个命令，可以对密码进行重新设置并在命令行终端打印密码
 
 host: "localhost"
 port: "9200"
 user: "elastic"
-password: "*T+uMmlqgE8aS2q6DwtS"  
+password: "5RM3s2Py-JXkD985KzW="   
 index: "reference"
 search_field: "text"
