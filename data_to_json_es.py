@@ -86,7 +86,8 @@ def format_date(date_str):
             return None
 
 # 指定CSV文件路径
-csv_path = "./data/weather_data/processed_markdown_documents.csv"
+# csv_path = "./data/weather_data/processed_markdown_documents.csv"
+csv_path = "/home/zl/process_data/all.csv"
 
 # 读取CSV文件
 print(f"读取CSV文件: {csv_path}")
@@ -131,12 +132,43 @@ for i in range(0, len(df), batch_size):
         title = clean_text(row['title'])
         text = clean_text(row['text'])
         
-        # 检查文档是否已存在
-        if check_document_exists(reference_es, title, text):
-            print(f"跳过重复文档: {title[:30]}...")
-            duplicate_count += 1
-            continue
+        # # 检查文档是否已存在
+        # if check_document_exists(reference_es, title, text):
+        #     print(f"跳过重复文档: {title[:30]}...")
+        #     duplicate_count += 1
+        #     continue
             
+        # doc = {
+        #     "text": f"[title]{title}[title][text]{text}[text]",
+        #     "url": row['url'],
+        #     "source": os.path.basename(csv_path).split('.')[0],
+        #     "date": row['date']
+        # }
+        
+        # # 生成唯一ID
+        # doc_id = generate_document_id(title, text)
+
+
+        existing_doc_id = None
+        if check_document_exists(reference_es, title, text):
+            print(f"覆盖重复文档: {title[:30]}...")
+            duplicate_count += 1
+            # 查找现有文档的ID以便更新
+            query_body = {
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"match_phrase": {"text": title}},
+                            {"match_phrase": {"text": text[:100]}}
+                        ]
+                    }
+                },
+                "size": 1
+            }
+            results = reference_es.es.search(index=reference_es.index, body=query_body)
+            if results['hits']['hits']:
+                existing_doc_id = results['hits']['hits'][0]['_id']
+        
         doc = {
             "text": f"[title]{title}[title][text]{text}[text]",
             "url": row['url'],
@@ -144,9 +176,9 @@ for i in range(0, len(df), batch_size):
             "date": row['date']
         }
         
-        # 生成唯一ID
-        doc_id = generate_document_id(title, text)
-        
+        # 使用现有ID（更新）或生成新ID（插入）
+        doc_id = existing_doc_id if existing_doc_id else generate_document_id(title, text)
+
         actions.append({
             "_index": reference_es.index,
             "_id": doc_id,  # 使用生成的唯一ID
@@ -164,6 +196,7 @@ for i in range(0, len(df), batch_size):
         print(f"批次 {i//batch_size + 1}/{(len(df)+batch_size-1)//batch_size}: 成功 {success}, 失败 {failed}")
     except Exception as e:
         print(f"批次 {i//batch_size + 1} 导入失败: {str(e)[:200]}")
+        exit()
         # 尝试逐个导入
         for j, action in enumerate(actions):
             try:
@@ -173,4 +206,4 @@ for i in range(0, len(df), batch_size):
             except Exception as e2:
                 print(f"  - 文档 {j+1} 单独导入失败: {str(e2)[:100]}")
 
-print(f"导入完成! 总共成功导入 {success_count}/{len(df)} 条记录, 跳过 {duplicate_count} 条重复记录")
+print(f"导入完成! 总共成功导入 {success_count}/{len(df)} 条记录, 覆盖掉 {duplicate_count} 条重复记录")

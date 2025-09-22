@@ -45,7 +45,12 @@ def search_similar_articles(query_text, size=10):
 # 示例使用
 if __name__ == "__main__":
     # 测试查询
-    query = "天气预报 降水量"
+    # query = "天气预报 降水量"
+    # query ="新疆地区"
+    # query = "日极大风速（W）"
+    # query = "飞机人工增雨"
+    # query = "决策服务科值班重点"
+    query = "DX"
     print(f"搜索与 '{query}' 相关的文章:")
     results = search_similar_articles(query)
     
